@@ -18,7 +18,8 @@ export default function Home() {
     map.data.loadGeoJson("/geojson2.json")
 
     map.data.setStyle(function (feature) {
-      var annualBalance = feature.getProperty("annual_balance")
+      var annualBalance: number =
+        (feature.getProperty("annual_balance") as number) ?? 0
       var color = getColor(annualBalance)
       return {
         fillColor: color,
@@ -30,7 +31,16 @@ export default function Home() {
 
     map.data.addListener(
       "click",
-      function (event: google.maps.MapsEventListener) {
+      function (event: {
+        constructor: any
+        feature: any
+        latLng:
+          | google.maps.LatLng
+          | google.maps.LatLngLiteral
+          | null
+          | undefined
+      }) {
+        console.log(event.constructor)
         var feature = event.feature
         var name =
           feature.getProperty("N03_001") +
@@ -49,7 +59,7 @@ export default function Home() {
       }
     )
 
-    function getColor(annualBalance) {
+    function getColor(annualBalance: number) {
       return annualBalance > 1000000
         ? "#FF4000"
         : annualBalance > 750000
