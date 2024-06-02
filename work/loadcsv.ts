@@ -1,12 +1,17 @@
 import parse from "csv-simple-parser"
 import geo from "../public/geojson.json"
 
+type Columns = "県名" | "行番号" | "団体名" | "010:実質単年度収支"
+
 const main = async () => {
   const foo = Bun.file("public/a0010202261020100.csv")
   console.log(foo.size) // number of bytes
   console.log(foo.type) // MIME type
 
-  const csv = parse(await foo.text(), { header: true })
+  const csv = parse(await foo.text(), { header: true }) as Record<
+    Columns,
+    string
+  >[]
   const values = csv
     .filter((row) => row["県名"] && row["行番号"] === "1")
     .reduce(
